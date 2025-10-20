@@ -48,16 +48,15 @@ def resize_widgets(event=None):
 
     # 현재 창에 대한 스케일 계산 (가로/세로 중 작은 쪽을 채택)
     scale_w = w / base_w
-    scale_h = h / base_h
-    scale = min(scale_w, scale_h)  # max/min 제한 제거
+    scale_h = h / base_h    
 
     # 기본 폰트 사이즈 (base)
     base_big = 16
     base_mid = 12
 
     # 스케일 적용 (최소/최대 제한 없이 계산)
-    font_big_size = int(base_big * scale)
-    font_mid_size = int(base_mid * scale)
+    font_big_size = int(base_big * scale_w)
+    font_mid_size = int(base_mid * scale_h)
 
     font_big = ("맑은 고딕", font_big_size, "bold")
     font_mid = ("맑은 고딕", font_mid_size)
@@ -98,7 +97,7 @@ style.configure("Big.TLabelframe.Label", font=("맑은 고딕", 14, "bold"))
 
 # 테마 선택 체크버튼
 theme_var = tk.StringVar(value="기본")
-theme_check = ttk.Checkbutton(root, text="블랙 테마", variable=theme_var, onvalue="블랙", offvalue="기본", command=on_theme_change)
+theme_check = ttk.Checkbutton(root, text="기본/블랙", variable=theme_var, onvalue="블랙", offvalue="기본", command=on_theme_change, style="TLabel")
 theme_check.pack(anchor="ne", padx=8, pady=4)
 
 set_theme(theme_var.get())
