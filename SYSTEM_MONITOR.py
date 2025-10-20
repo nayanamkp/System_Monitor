@@ -43,9 +43,21 @@ def resize_widgets(event=None):
     w = root.winfo_width()
     h = root.winfo_height()
 
-    # 폰트 크기 비율을 조금 더 작게 조정
-    font_big_size = max(13, int(h * 0.055))
-    font_mid_size = max(10, int(h * 0.04))
+    # 기준(base) 해상도
+    base_w, base_h = 480, 320
+
+    # 현재 창에 대한 스케일 계산 (가로/세로 중 작은 쪽을 채택)
+    scale_w = w / base_w
+    scale_h = h / base_h
+    scale = min(scale_w, scale_h)  # max/min 제한 제거
+
+    # 기본 폰트 사이즈 (base)
+    base_big = 16
+    base_mid = 12
+
+    # 스케일 적용 (최소/최대 제한 없이 계산)
+    font_big_size = int(base_big * scale)
+    font_mid_size = int(base_mid * scale)
 
     font_big = ("맑은 고딕", font_big_size, "bold")
     font_mid = ("맑은 고딕", font_mid_size)
@@ -65,7 +77,7 @@ def set_theme(theme):
         style.configure("TProgressbar", background="green", troughcolor="#e0e0e0")
         root.configure(bg="#f0f0f0")
     elif theme == "블랙":
-        style.theme_use('clam')
+        style.theme_use('default')
         style.configure("Big.TLabelframe", background="#222222")
         style.configure("Big.TLabelframe.Label", background="#222222", foreground="white")
         style.configure("TLabel", background="#222222", foreground="white")
@@ -84,41 +96,40 @@ root.resizable(True, True)
 style = ttk.Style()
 style.configure("Big.TLabelframe.Label", font=("맑은 고딕", 14, "bold"))
 
-# 테마 선택 콤보박스
+# 테마 선택 체크버튼
 theme_var = tk.StringVar(value="기본")
-theme_combo = ttk.Combobox(root, textvariable=theme_var, values=["기본", "블랙"], state="readonly", width=7)
-theme_combo.pack(anchor="ne", padx=8, pady=4)
-theme_combo.bind("<<ComboboxSelected>>", on_theme_change)
+theme_check = ttk.Checkbutton(root, text="블랙 테마", variable=theme_var, onvalue="블랙", offvalue="기본", command=on_theme_change)
+theme_check.pack(anchor="ne", padx=8, pady=4)
 
 set_theme(theme_var.get())
 
 # System Frame
 system_frame = ttk.LabelFrame(root, text="System", style="Big.TLabelframe")
-system_frame.pack(fill="x", padx=8, pady=4)
+system_frame.pack(fill="both", padx=8, pady=4)
 
 cpu_label = ttk.Label(system_frame, text="CPU: ")
 cpu_label.pack(anchor="w", padx=8, pady=1)
 cpu_bar = ttk.Progressbar(system_frame, maximum=100)
-cpu_bar.pack(fill="x", padx=8, pady=1)
+cpu_bar.pack(fill="both", padx=8, pady=1)
 
 ram_label = ttk.Label(system_frame, text="RAM: ")
 ram_label.pack(anchor="w", padx=8, pady=1)
 ram_bar = ttk.Progressbar(system_frame, maximum=100)
-ram_bar.pack(fill="x", padx=8, pady=1)
+ram_bar.pack(fill="both", padx=8, pady=1)
 
 # GPU Frame
 gpu_frame = ttk.LabelFrame(root, text="GPU", style="Big.TLabelframe")
-gpu_frame.pack(fill="x", padx=8, pady=4)
+gpu_frame.pack(fill="both", padx=8, pady=4)
 
 gpu_label = ttk.Label(gpu_frame, text="GPU: ")
 gpu_label.pack(anchor="w", padx=8, pady=2)
 gpu_bar = ttk.Progressbar(gpu_frame, maximum=100)
-gpu_bar.pack(fill="x", padx=8, pady=2)
+gpu_bar.pack(fill="both", padx=8, pady=2)
 
 vram_label = ttk.Label(gpu_frame, text="VRAM: ")
 vram_label.pack(anchor="w", padx=8, pady=2)
 vram_bar = ttk.Progressbar(gpu_frame, maximum=100)
-vram_bar.pack(fill="x", padx=8, pady=2)
+vram_bar.pack(fill="both", padx=8, pady=2)
 
 root.bind("<Configure>", resize_widgets)
 
